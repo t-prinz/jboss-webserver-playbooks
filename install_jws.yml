@@ -1,0 +1,44 @@
+---
+- name: Install Java Web Server
+  hosts: "{{ vm_fq_hostname | default('NO_HOSTS') }}"
+  remote_user: root
+
+#subscription-manager repos --enable=jws-5-for-rhel-7-server-rpms
+#subscription-manager repos --enable=jb-coreservices-1-for-rhel-7-server-rpms
+
+  tasks:
+    - name: Ensure OpenJDK and git are installed
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - java-1.8.0-openjdk-devel
+        - git
+#
+#alternatives --config java
+#alternatives --config javac
+
+    - name: Ensure tomcatjss is removed
+      package:
+        name: tomcatjss
+        state: absent
+
+    - name: Ensure JWS is installed
+      package:
+        name: "@jws5"
+        state: present
+
+    - name: Ensure JWS is enabled and started
+      service:
+        name: jws5-tomcat
+        enabled: True
+        state: started
+
+    - name: Open up required firewall port
+      firewalld:
+        immediate: True
+        permanent: True
+        port: "{{ item }}"
+        state: enabled
+      with_items:
+        - "8080/tcp"
