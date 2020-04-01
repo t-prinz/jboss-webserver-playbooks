@@ -2,11 +2,12 @@
 - name: Install Java Web Server
   hosts: "{{ vm_fq_hostname | default('NO_HOSTS') }}"
   remote_user: root
-
-#subscription-manager repos --enable=jws-5-for-rhel-7-server-rpms
-#subscription-manager repos --enable=jb-coreservices-1-for-rhel-7-server-rpms
+#  become: true
 
   tasks:
+    - name: Ensure repositories are enabled
+      command: subscription-manager repos --enable=jws-5-for-rhel-7-server-rpms --enable=jb-coreservices-1-for-rhel-7-server-rpms
+
     - name: Ensure OpenJDK and git are installed
       package:
         name: "{{ item }}"
@@ -14,9 +15,6 @@
       with_items:
         - java-1.8.0-openjdk-devel
         - git
-#
-#alternatives --config java
-#alternatives --config javac
 
     - name: Ensure tomcatjss is removed
       package:
