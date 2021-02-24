@@ -1,12 +1,14 @@
 ---
 - name: Install Java Web Server
-  hosts: "{{ vm_fq_hostname | default('NO_HOSTS') }}"
-  remote_user: root
+  hosts: all
+  become: True
+
   vars:
     git_app_repo: "https://github.com/t-prinz/HelloServlet.git"
     git_tmp_checkout_dir: "/var/tmp/checkout"
     jws_app_dir: "/var/opt/rh/jws5/lib/tomcat/webapps"
     jws_war_name: "HelloServlet-1.0.0.war"
+#    jws_war_name: "HelloServletManual.war"
 
   tasks:
     - name: Obtain the application
@@ -20,6 +22,7 @@
         group: tomcat
         owner: tomcat
         remote_src: Yes
+#        src: "{{ git_tmp_checkout_dir }}/manualbuild/{{ jws_war_name }}"
         src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
 #        src: "{{ git_tmp_checkout_dir }}/deployments/{{ jws_war_name }}"
 

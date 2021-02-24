@@ -1,8 +1,7 @@
 ---
 - name: Install Java Web Server
-  hosts: "{{ vm_fq_hostname | default('NO_HOSTS') }}"
-  remote_user: root
-#  become: true
+  hosts: all
+  become: True
 
   tasks:
     - name: Ensure repositories are enabled
@@ -13,7 +12,8 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - java-1.8.0-openjdk-devel
+#        - java-1.8.0-openjdk-devel
+        - java-11-openjdk-devel
         - git
 
     - name: Ensure tomcatjss is removed
@@ -32,11 +32,11 @@
         enabled: True
         state: started
 
-    - name: Open up required firewall port
-      firewalld:
-        immediate: True
-        permanent: True
-        port: "{{ item }}"
-        state: enabled
-      with_items:
-        - "8080/tcp"
+#    - name: Open up required firewall port
+#      firewalld:
+#        immediate: True
+#        permanent: True
+#        port: "{{ item }}"
+#        state: enabled
+#      with_items:
+#        - "8080/tcp"
