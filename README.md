@@ -22,3 +22,11 @@ The following workflow shows how these playbooks can be used to set up a Satelli
 Once the application has been installed, it can be accessed at
 
     http://host.my.domain:8080/HelloServlet-1.0.0
+
+The `install_app.yml` playbook uses git to copy a repository that has a pre-built artifact in the `target` directory.  The git repository and artifact can be specified via variables:
+
+    ansible-playbook -i inventory \
+                     -e git_app_repo=https://github.com/the-repo.git \
+                     -e jws_war_name=war_file \
+                     -l host.my.domain \
+                     install_app.yml
