@@ -1,20 +1,53 @@
 ---
-- name: Install Java Web Server
+- name: Ensure Java Web Server (JWS) is installed
   hosts: all
   become: True
 
   tasks:
-    - name: Ensure repositories are enabled
-      command: subscription-manager repos --enable=jws-5-for-rhel-7-server-rpms --enable=jb-coreservices-1-for-rhel-7-server-rpms
+    - name: Define repositories to be enabled for RHEL 7
+      set_fact:
+        rhportal_reg_rhsm_supplemental_repo_list:
+          - jws-5-for-rhel-7-server-rpms
+          - jb-coreservices-1-for-rhel-7-server-rpms
+      when: ansible_facts.distribution == "RedHat" and ansible_facts.distribution_major_version == "7"
 
-    - name: Ensure OpenJDK and git are installed
+    - name: Define repositories to be enabled for RHEL 8
+      set_fact:
+        rhportal_reg_rhsm_supplemental_repo_list:
+          - jws-5-for-rhel-8-x86_64-rpms
+      when: ansible_facts.distribution == "RedHat" and ansible_facts.distribution_major_version == "8"
+
+    - name: Ensure repositories are enabled
+      command: "subscription-manager repos --enable={{ item }}"
+      with_items: "{{ rhportal_reg_rhsm_supplemental_repo_list }}"
+
+    - name: Ensure firewalld is installed
       package:
-        name: "{{ item }}"
-        state: present
+        name: firewalld
+        state: installed
+
+    - name: Ensure firewalld is enabled and started
+      service:
+        name: firewalld
+        enabled: True
+        state: started
+
+    - name: Ensure firewall ports are open
+      ansible.posix.firewalld:
+        immediate: True
+        permanent: True
+        port: "{{ item }}"
+        state: enabled
       with_items:
-#        - java-1.8.0-openjdk-devel
-        - java-11-openjdk-devel
-        - git
+        - "8080/tcp"
+#        - "8005/tcp"
+#        - "8009/tcp"
+#        - "8443/tcp"
+
+    - name: Ensure OpenJDK is installed
+      package:
+        name: java-1.8.0-openjdk-devel
+        state: present
 
     - name: Ensure tomcatjss is removed
       package:
@@ -25,6 +58,7 @@
       package:
         name: "@jws5"
         state: present
+      notify: restart_jws
 
     - name: Ensure JWS is enabled and started
       service:
@@ -32,11 +66,9 @@
         enabled: True
         state: started
 
-#    - name: Open up required firewall port
-#      firewalld:
-#        immediate: True
-#        permanent: True
-#        port: "{{ item }}"
-#        state: enabled
-#      with_items:
-#        - "8080/tcp"
+  handlers:
+    - name: restart_jws
+      service:
+        enabled: True
+        name: jws5-tomcat
+        state: restarted
