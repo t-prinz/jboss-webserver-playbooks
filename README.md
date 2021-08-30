@@ -5,11 +5,11 @@ These playbooks can be used to install JWS and deploy a sample application.
 ### Prerequisites
 
 1.  The target system needs to be running RHEL 7 or RHEL 8.
-2.  The target system needs to be registered (to the Red Hat portal or to Satellite) and have access to the JWS repositories.  The correct repository(ies) will be enabled during installation.
+2.  The target system needs to be registered (to the Red Hat portal or to Satellite) and have access to the JWS repositories.  The correct repositories will be enabled during installation.
 
 ### Using the playbooks
 
-The following workflow shows how these playbooks can be used to set up a Satellite server.
+The following workflow shows how these playbooks can be used to install JWS and then deploy the sample application.
 
     ansible-playbook -i inventory \
                      -l host.my.domain \
