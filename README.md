@@ -4,8 +4,8 @@ These playbooks can be used to install JWS and deploy a sample application.
 
 ### Prerequisites
 
-1.  The target system needs to be running RHEL 7 or 8.
-2.  The target system needs to be registered (to the Red Hat portal or to Satellite) and have access to the JWS repositories.
+1.  The target system needs to be running RHEL 7 or RHEL 8.
+2.  The target system needs to be registered (to the Red Hat portal or to Satellite) and have access to the JWS repositories.  The correct repository(ies) will be enabled during installation.
 
 ### Using the playbooks
 
