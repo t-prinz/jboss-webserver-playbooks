@@ -1,0 +1,98 @@
+---
+- name: Ensure Java Web Server (JWS) is installed using a zip file and managed by systemd
+  hosts: all
+  become: True
+  vars:
+    jboss_jws_zip_platform_arch_file: jws-5.5.0-application-server-RHEL8-x86_64.zip
+    jboss_jws_zip_file: jws-5.5.0-application-server.zip
+    jboss_jws_dest_dir: /opt
+    jws_home: "{{ jboss_jws_dest_dir }}/jws-5.5"
+
+  tasks:
+    - name: Ensure firewalld is installed
+      package:
+        name: firewalld
+        state: installed
+
+    - name: Ensure firewalld is enabled and started
+      service:
+        name: firewalld
+        enabled: True
+        state: started
+
+    - name: Ensure firewall ports are open
+      ansible.posix.firewalld:
+        immediate: True
+        permanent: True
+        port: "{{ item }}"
+        state: enabled
+      with_items:
+        - "8080/tcp"
+#        - "8005/tcp"
+#        - "8009/tcp"
+        - "8443/tcp"
+
+    - name: Ensure OpenJDK, unzip, and SSL packages are installed
+      package:
+        name: "{{ pkgs_to_install }}"
+        state: present
+      vars:
+        pkgs_to_install:
+          - java-1.8.0-openjdk-devel
+          - unzip
+          - openssl
+          - apr
+
+    - name: Ensure tomcatjss is removed
+      package:
+        name: tomcatjss
+        state: absent
+
+    - name: Ensure JWS zip files are copied
+      ansible.builtin.unarchive:
+        copy: True
+        dest: "{{ jboss_jws_dest_dir }}"
+        src: "{{ item }}"
+      with_items:
+        - "{{ jboss_jws_zip_file }}"
+        - "{{ jboss_jws_zip_platform_arch_file }}"
+
+    - name: Ensure systemd is configured
+      command:
+        chdir: "{{ jws_home }}/tomcat"
+        cmd: "sh .postinstall.systemd"
+      register: postinstall_output
+      failed_when: '"Skipping postinstall. Package is already installed in" not in postinstall_output.stdout'
+
+    - name: Print postinstall command out
+      debug:
+        var: postinstall_output
+
+    - name: Ensure directory permissions are correct
+      file:
+        group: tomcat
+        owner: tomcat
+        path: "{{ item }}"
+        recurse: True
+        state: directory
+      with_items:
+        - "{{ jws_home }}/tomcat/logs"
+        - "{{ jws_home }}/tomcat/temp"
+        - "{{ jws_home }}/tomcat/webapps"
+        - "{{ jws_home }}/tomcat/work"
+
+    - name: Ensure directory permissions are correct
+      file:
+        group: tomcat
+        owner: tomcat
+        path: "{{ item }}"
+        recurse: True
+        state: directory
+      with_items:
+        - "{{ jws_home }}/tomcat/conf"
+
+    - name: Ensure JWS is enabled and started
+      service:
+        name: jws5-tomcat
+        enabled: True
+        state: restarted
