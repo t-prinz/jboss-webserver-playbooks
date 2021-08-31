@@ -1,4 +1,15 @@
 ---
+#
+# The variable jws_app_dir must be defined.  Some possible values include
+#
+# For a RHEL RPM installation
+#
+#    jws_app_dir: "/opt/rh/jws5/root/usr/share/tomcat/webapps"
+#
+# For a RHEL zip installation
+#
+#    jws_app_dir: "/opt/jws-5.5/tomcat/webapps"
+#
 - name: Ensure sample JWS application is installed
   hosts: all
   become: True
@@ -6,9 +17,15 @@
     git_app_repo: "https://github.com/t-prinz/HelloServlet.git"
     jws_war_name: "HelloServlet-1.0.0.war"
     git_tmp_checkout_dir: "/var/tmp/checkout"
-    jws_app_dir: "/opt/rh/jws5/root/usr/share/tomcat/webapps"
+    jws_app_dir: ""
 
   tasks:
+    - name: Ensure that jws_app_dir is not null
+      assert:
+        fail_msg: "The variable jws_app_dir must be defined."
+        that:
+          - jws_app_dir != ""
+
     - name: Ensure git is installed
       yum:
         name: git
