@@ -13,7 +13,7 @@ These playbooks can be used to install JWS on a RHEL system and deploy a sample 
 
 ### Using the playbooks
 
-Decide on an installation method (RPM or zip) and run the appropriate playbooks:
+Decide on an installation method (RPM or zip) and run the appropriate playbooks.
 
 For a RPM installation:
 
