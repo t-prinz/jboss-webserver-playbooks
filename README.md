@@ -8,8 +8,8 @@ These playbooks can be used to install JWS on a RHEL system and deploy a sample 
 * If using the RPM installation method, the target system needs to be registered (to the Red Hat portal or to Satellite) and have access to the JWS repositories.  The correct repositories will be enabled during installation.
 * If using the zip installation method, the JWS zip files must be downloaded locally from the Red Hat portal.
 
-    jws-5.5.0-application-server.zip
-    jws-5.5.0-application-server-RHEL8-x86_64.zip
+        jws-5.5.0-application-server.zip
+        jws-5.5.0-application-server-RHEL8-x86_64.zip
 
 ### Using the playbooks
 
