@@ -1,0 +1,33 @@
+---
+- name: Print catalina_home
+  debug:
+    var: catalina_home
+    verbosity: 1
+
+- name: Print instance information
+  debug:
+    msg: "Working on instance {{ outer_item.instance_name }}, http_port {{ outer_item.http_port }}"
+
+- name: Define new catalina_base
+  set_fact:
+    catalina_base: "{{ catalina_home }}@{{ outer_item.instance_name }}"
+
+- name: Print new catalina_base
+  debug:
+    var: catalina_base
+    verbosity: 1
+
+- name: src
+  debug:
+    msg: "{{ jws_war_file }}"
+
+- name: dest
+  debug:
+    msg: "{{ catalina_base }}/webapps"
+
+- name: Ensure application is copied
+  copy:
+    dest: "{{ catalina_base }}/webapps"
+    group: tomcat
+    owner: tomcat
+    src: "{{ jws_war_file }}"

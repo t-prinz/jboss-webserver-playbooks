@@ -1,0 +1,93 @@
+---
+- name: Print catalina_home
+  debug:
+    var: catalina_home
+    verbosity: 1
+
+- name: Print instance information
+  debug:
+    msg: "Working on containerized instance {{ outer_item.instance_name }}, http_port {{ outer_item.http_port }}"
+
+- name: Split the container image
+  set_fact:
+    split_ci: "{{ container_image.split('/') }}"
+
+- name: Get just the container image name
+  set_fact:
+    container_image_name: "{{ split_ci[ split_ci | length - 1 ] }}"
+
+- name: Print the container image name
+  debug:
+    var: container_image_name
+    verbosity: 1
+
+- name: Define the name used by podman and systemd
+  set_fact:
+    pman_sysd_name: "{{ container_image_name }}-{{ outer_item.instance_name }}"
+
+- name: Print the name used by podman and systemd
+  debug:
+    var: pman_sysd_name
+    verbosity: 1
+
+- name: Ensure firewall ports are open
+  ansible.posix.firewalld:
+    immediate: True
+    permanent: True
+    port: "{{ item }}"
+    state: enabled
+  with_items:
+    - "{{ outer_item.shutdown_port }}/tcp"
+    - "{{ outer_item.ajp_connector_port }}/tcp"
+    - "{{ outer_item.http_port }}/tcp"
+    - "{{ outer_item.https_port }}/tcp"
+
+- name: Check to see if container is running
+  shell: "podman ps | grep {{ pman_sysd_name }}"
+  ignore_errors: True
+  register: container_status
+
+- name: Print container status
+  debug:
+    var: container_status
+    verbosity: 1
+
+- name: Stop the container if it is running
+  shell: "podman kill {{ pman_sysd_name }}"
+  when: container_status.failed == False
+
+- name: Check to see if the systemd file is in place
+  stat:
+    path: "/etc/systemd/system/{{ pman_sysd_name }}.service"
+  register: systemd_stat
+
+- name: Print status of systemd file
+  debug:
+    var: systemd_stat
+    verbosity: 1
+
+- block:
+    - name: Ensure service is disabled and stopped
+      service:
+        name: "{{ pman_sysd_name }}"
+        enabled: False
+        state: stopped
+
+    - name: Ensure systemd file is removed
+      file:
+        path: "/etc/systemd/system/{{ pman_sysd_name }}.service"
+        state: absent
+
+  when: systemd_stat.stat.exists
+
+- name: Start the container
+  shell: "podman run -d --rm --name={{ pman_sysd_name }} -e ENVAR={{ pman_sysd_name }} -p {{ outer_item.shutdown_port }}:8005 -p {{ outer_item.ajp_connector_port }}:8009 -p {{ outer_item.http_port }}:8080 -p {{ outer_item.https_port }}:8443 {{ container_image }}"
+
+- name: Generate the systemd file
+  shell: "podman generate systemd --new --name {{ pman_sysd_name }} > /etc/systemd/system/{{ pman_sysd_name }}.service"
+
+- name: Ensure instance is enabled and started
+  service:
+    name: "{{ pman_sysd_name }}"
+    enabled: True
+    state: restarted

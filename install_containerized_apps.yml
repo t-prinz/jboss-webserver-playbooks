@@ -1,0 +1,32 @@
+---
+- name: Ensure sample containerized JWS applications are installed
+  hosts: all
+  become: True
+  vars:
+    jws_instances_vars: ""
+
+  tasks:
+    - name: Include JWS instances variables file
+      include_vars:
+        file: "{{ jws_instances_vars }}"
+
+    - name: Ensure firewalld and podman are installed
+      package:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - firewalld
+        - podman
+
+    - name: Ensure firewalld is enabled and started
+      service:
+        name: firewalld
+        enabled: True
+        state: started
+
+    - name: Loop over the tasks file that will create each containerized instance
+      include_tasks:
+        file: files/create_containerized_app_instances_tasks.yml
+      loop: "{{ jws_instances }}"
+      loop_control:
+        loop_var: outer_item

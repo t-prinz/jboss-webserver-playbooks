@@ -1,0 +1,18 @@
+---
+- name: Create instances of JBoss Web Server
+  hosts: all
+  become: True
+  vars:
+    jws_instances_vars: ""
+
+  tasks:
+    - name: Include JWS instances variables file
+      include_vars:
+        file: "{{ jws_instances_vars }}"
+
+    - name: Loop over the tasks file that will create each instance
+      include_tasks:
+        file: files/instance_create_tasks.yml
+      loop: "{{ jws_instances }}"
+      loop_control:
+        loop_var: outer_item
