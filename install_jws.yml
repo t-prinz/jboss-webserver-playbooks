@@ -2,6 +2,8 @@
 - name: Ensure Java Web Server (JWS) is installed
   hosts: all
   become: True
+  vars:
+    configure_firewall: True
 
   tasks:
     - name: Define repositories to be enabled for RHEL 7
@@ -43,6 +45,7 @@
 #        - "8005/tcp"
 #        - "8009/tcp"
         - "8443/tcp"
+      when: configure_firewall|bool
 
     - name: Ensure OpenJDK and SSL packages are installed
       package:

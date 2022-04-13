@@ -3,6 +3,7 @@
   hosts: all
   become: True
   vars:
+    configure_firewall: True
     jboss_jws_zip_platform_arch_file: jws-5.5.0-application-server-RHEL8-x86_64.zip
     jboss_jws_zip_file: jws-5.5.0-application-server.zip
     jboss_jws_dest_dir: /opt
@@ -31,6 +32,7 @@
 #        - "8005/tcp"
 #        - "8009/tcp"
         - "8443/tcp"
+      when: configure_firewall|bool
 
     - name: Ensure OpenJDK, unzip, and SSL packages are installed
       package:
