@@ -54,7 +54,7 @@
         verbosity: 1
 
     - name: Ensure credential configuration is defined
-      ansible.builtin.file:
+      ansible.builtin.copy:
         content: "https://{{ git_login_id }}:{{ git_token }}@github.com"
         dest: ".git-credentials"
         mode: "0400"
