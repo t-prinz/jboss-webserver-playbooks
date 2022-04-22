@@ -20,21 +20,21 @@
         that:
           - git_email != ""
 
-#    - name: Ensure that git_token is not null
-#      assert:
-#        fail_msg: "The variable git_token must be defined."
-#        that:
-#          - git_token != ""
+    - name: Ensure that git_token is not null
+      assert:
+        fail_msg: "The variable git_token must be defined."
+        that:
+          - git_token != ""
 
     - name: Run git configuration commands
       command:
-#        chdir: "{{ git_tmp_checkout_dir }}"
         cmd: "{{ item }}"
       ignore_errors: True
       register: git_output
       with_items:
         - "git config --global user.name '{{ git_username }}'"
         - "git config --global user.email '{{ git_email }}'"
+        - "git config --global credential.helper store"
 
     - name: Print git configuration output
       debug:
