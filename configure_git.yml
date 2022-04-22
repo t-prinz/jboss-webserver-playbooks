@@ -50,4 +50,4 @@
 
     - name: print
       debug:
-        msg: "https://{{ git_login_id }}:{{ git_token }}"@github.com"
+        msg: "https://{{ git_login_id }}:{{ git_token }}@github.com"
