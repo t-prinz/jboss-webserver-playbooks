@@ -1,0 +1,44 @@
+---
+- name: Build application with maven and push to git repository
+  hosts: "{{ hostlist | default('all') }}"
+  vars:
+    git_app_repo: "https://github.com/t-prinz/HelloServlet.git"
+    jws_war_name: "HelloServlet-1.0.0.war"
+    git_tmp_checkout_dir: "/var/tmp/checkout"
+    git_repo: ""
+
+    git_repo: ""
+    working_directory: "./mvntmp"
+    maven_commands:
+      - mvn clean
+      - mvn package
+
+  tasks:
+    - name: Ensure that git_repo is not null
+      assert:
+        fail_msg: "The variable git_repo must be defined."
+        that:
+          - git_repo != ""
+
+    - name: Ensure git is installed
+      yum:
+        name: git
+        state: present
+
+    - name: Obtain the application
+      git:
+        repo: "{{ git_app_repo }}"
+        dest: "{{ git_tmp_checkout_dir }}"
+
+    - name: Ensure application is copied
+      copy:
+        dest: "{{ git_repo }}"
+        group: tomcat
+        owner: tomcat
+        remote_src: Yes
+        src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
+
+    - name: Cleanup temporary directory
+      file:
+        path: "{{ git_tmp_checkout_dir }}"
+        state: absent

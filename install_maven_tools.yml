@@ -1,0 +1,14 @@
+---
+- name: Ensure tools are installed to use maven
+  hosts: "{{ hostlist | default('all') }}"
+  become: True
+
+  tasks:
+
+    - name: Ensure required tools are installed (works with RHEL 8 only)
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - maven
