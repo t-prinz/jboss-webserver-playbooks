@@ -1,0 +1,24 @@
+---
+- name: Ensure GitHub CLI is available
+  hosts: "{{ hostlist | default('all') }}"
+  become: True
+
+  tasks:
+
+    - name: Ensure GitHub CLI tools repository is available
+      ansible.builtin.yum_repository:
+        baseurl: https://cli.github.com/packages/rpm
+        description: packages for the GitHub CLI
+        enabled: 1
+        gpgcheck: yes
+        gpgkey: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xc99b11deb97541f0
+        name: gh-cli
+        state: present
+
+#    - name: Ensure required tools are installed (works with RHEL 8 only)
+#      yum:
+#        name: "{{ item }}"
+#        state: present
+#      with_items:
+#        - git
+#        - maven

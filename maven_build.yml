@@ -36,6 +36,7 @@
       debug:
         var: maven_output
 
+# git commit
 # Push 
 
 #    - name: Cleanup temporary directory
