@@ -5,7 +5,8 @@
 #    git_app_repo: "https://github.com/t-prinz/HelloServlet.git"
     git_app_repo: ""
 #    jws_war_name: "HelloServlet-1.0.0.war"
-    git_tmp_checkout_dir: "/var/tmp/checkout"
+#    git_tmp_checkout_dir: "/var/tmp/checkout"
+    git_tmp_checkout_dir: "./mvn_tmp"
 
     maven_commands:
       - mvn clean
