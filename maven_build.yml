@@ -24,6 +24,16 @@
         repo: "{{ git_app_repo }}"
         dest: "{{ git_tmp_checkout_dir }}"
 
+    - name: Run maven commands
+      command:
+        chdir: "{{ git_tmp_checkout_dir }}"
+        cmd: "{{ item }}"
+      ignore_errors: True
+      register: maven_output
+      with_items: "{{ maven_commands }}"
+
+# Push 
+
 #    - name: Cleanup temporary directory
 #      file:
 #        path: "{{ git_tmp_checkout_dir }}"
