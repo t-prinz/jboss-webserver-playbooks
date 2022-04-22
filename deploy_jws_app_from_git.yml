@@ -55,6 +55,7 @@
 #      ignore_errors: True
 #      with_items: "{{ maven_commands }}"
 
+    - name: Ensure application is copied
       copy:
         dest: "{{ jws_app_dir }}/{{ dest_war_name }}"
         group: tomcat
