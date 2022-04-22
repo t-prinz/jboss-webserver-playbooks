@@ -18,6 +18,7 @@
 #    jws_war_name: "HelloServlet-1.0.0.war"
 #    git_tmp_checkout_dir: "/var/tmp/checkout"
     git_tmp_checkout_dir: "./mvn_tmp"
+    dest_war_name: ROOT.war
 
     git_commands:
       - git commit -a -m 'Commit from Ansible build'
