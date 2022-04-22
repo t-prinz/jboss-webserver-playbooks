@@ -38,6 +38,12 @@
         that:
           - jws_app_dir != ""
 
+    - name: Ensure that jws_war_name is not null
+      assert:
+        fail_msg: "The variable jws_war_name must be defined."
+        that:
+          - jws_war_name != ""
+
     - name: Ensure git is installed
       yum:
         name: git
@@ -48,13 +54,13 @@
         repo: "{{ git_app_repo }}"
         dest: "{{ git_tmp_checkout_dir }}"
 
-#    - name: Ensure application is copied
-#      copy:
-#        dest: "{{ jws_app_dir }}/{{ dest_war_name }}"
-#        group: tomcat
-#        owner: tomcat
-#        remote_src: Yes
-#        src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
+    - name: Ensure application is copied
+      copy:
+        dest: "{{ jws_app_dir }}/{{ dest_war_name }}"
+        group: tomcat
+        owner: tomcat
+        remote_src: Yes
+        src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
 
 #    - name: Cleanup temporary directory
 #      file:
