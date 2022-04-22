@@ -15,10 +15,7 @@
         name: gh-cli
         state: present
 
-#    - name: Ensure required tools are installed (works with RHEL 8 only)
-#      yum:
-#        name: "{{ item }}"
-#        state: present
-#      with_items:
-#        - git
-#        - maven
+    - name: Ensure GitHub CLI is installed
+      yum:
+        name: gh
+        state: present
