@@ -1,0 +1,30 @@
+---
+- name: Deploy a Java war file from a git repository to JBoss Java Web Server
+  hosts: "{{ hostlist | default('all') }}"
+  vars:
+    git_app_repo: ""
+#    jws_war_name: "HelloServlet-1.0.0.war"
+#    git_tmp_checkout_dir: "/var/tmp/checkout"
+    git_tmp_checkout_dir: "./mvn_tmp"
+
+    git_commands:
+      - git commit -a -m 'Commit from Ansible build'
+      - git push
+
+  tasks:
+    - name: Ensure that git_app_repo is not null
+      assert:
+        fail_msg: "The variable git_app_repo must be defined."
+        that:
+          - git_app_repo != ""
+
+    - name: Obtain the application
+      git:
+        repo: "{{ git_app_repo }}"
+        dest: "{{ git_tmp_checkout_dir }}"
+
+
+#    - name: Cleanup temporary directory
+#      file:
+#        path: "{{ git_tmp_checkout_dir }}"
+#        state: absent
