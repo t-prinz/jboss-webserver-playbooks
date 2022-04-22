@@ -12,7 +12,7 @@
       - mvn clean
       - mvn package
     git_commands:
-      - git commit -a -m 'Commit from Ansible'
+      - git commit -a -m 'Commit from Ansible build'
       - git push
 
   tasks:
@@ -38,6 +38,7 @@
     - name: Print maven output
       debug:
         var: maven_output
+        verbosity: 1
 
     - name: Commit and push the results
       command:
@@ -50,8 +51,9 @@
     - name: Print git output
       debug:
         var: git_output
+        verbosity: 1
 
-#    - name: Cleanup temporary directory
-#      file:
-#        path: "{{ git_tmp_checkout_dir }}"
-#        state: absent
+    - name: Cleanup temporary directory
+      file:
+        path: "{{ git_tmp_checkout_dir }}"
+        state: absent
