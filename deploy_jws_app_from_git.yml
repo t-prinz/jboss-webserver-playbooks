@@ -44,15 +44,15 @@
         that:
           - jws_war_name != ""
 
-    - name: Ensure git is installed
-      yum:
-        name: git
-        state: present
+#    - name: Ensure git is installed
+#      yum:
+#        name: git
+#        state: present
 
-    - name: Obtain the application
-      git:
-        repo: "{{ git_app_repo }}"
-        dest: "{{ git_tmp_checkout_dir }}"
+#    - name: Obtain the application
+#      git:
+#        repo: "{{ git_app_repo }}"
+#        dest: "{{ git_tmp_checkout_dir }}"
 
     - name: Ensure application is copied
       copy:

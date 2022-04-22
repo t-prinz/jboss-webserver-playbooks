@@ -40,20 +40,20 @@
         var: maven_output
         verbosity: 1
 
-    - name: Commit and push the results
-      command:
-        chdir: "{{ git_tmp_checkout_dir }}"
-        cmd: "{{ item }}"
-      ignore_errors: True
-      register: git_output
-      with_items: "{{ git_commands }}"
+#    - name: Commit and push the results
+#      command:
+#        chdir: "{{ git_tmp_checkout_dir }}"
+#        cmd: "{{ item }}"
+#      ignore_errors: True
+#      register: git_output
+#      with_items: "{{ git_commands }}"
 
-    - name: Print git output
-      debug:
-        var: git_output
-        verbosity: 1
+#    - name: Print git output
+#      debug:
+#        var: git_output
+#        verbosity: 1
 
-    - name: Cleanup temporary directory
-      file:
-        path: "{{ git_tmp_checkout_dir }}"
-        state: absent
+#    - name: Cleanup temporary directory
+#      file:
+#        path: "{{ git_tmp_checkout_dir }}"
+#        state: absent
