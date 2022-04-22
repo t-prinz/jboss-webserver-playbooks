@@ -1,0 +1,41 @@
+---
+- name: Ensure git is configured
+  hosts: "{{ hostlist | default('all') }}"
+  vars:
+    git_username: ""
+    git_email: ""
+    git_token: ""
+
+  tasks:
+
+    - name: Ensure that git_username is not null
+      assert:
+        fail_msg: "The variable git_username must be defined."
+        that:
+          - git_username != ""
+
+    - name: Ensure that git_email is not null
+      assert:
+        fail_msg: "The variable git_email must be defined."
+        that:
+          - git_email != ""
+
+#    - name: Ensure that git_token is not null
+#      assert:
+#        fail_msg: "The variable git_token must be defined."
+#        that:
+#          - git_token != ""
+
+    - name: Run git configuration commands
+      command:
+#        chdir: "{{ git_tmp_checkout_dir }}"
+        cmd: "{{ item }}"
+      ignore_errors: True
+      register: git_output
+      with_items:
+        - "git config --global user.name '{{ git_username }}'"
+        - "git config --global user.email '{{ git_email }}'"
+
+    - name: Print git configuration output
+      debug:
+        var: git_output
