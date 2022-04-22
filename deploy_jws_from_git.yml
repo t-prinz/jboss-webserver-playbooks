@@ -1,6 +1,7 @@
 ---
 - name: Deploy a Java war file from a git repository to JBoss Java Web Server
   hosts: "{{ hostlist | default('all') }}"
+  become: True
   vars:
     git_app_repo: ""
 #    jws_war_name: "HelloServlet-1.0.0.war"
