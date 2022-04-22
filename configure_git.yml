@@ -48,6 +48,13 @@
         var: git_output
         verbosity: 1
 
-    - name: print
+    - name: Print credential configuration
       debug:
         msg: "https://{{ git_login_id }}:{{ git_token }}@github.com"
+        verbosity: 1
+
+    - name: Ensure credential configuration is defined
+      ansible.builtin.file:
+        content: "https://{{ git_login_id }}:{{ git_token }}@github.com"
+        dest: ".git-credentials"
+        mode: "0400"
