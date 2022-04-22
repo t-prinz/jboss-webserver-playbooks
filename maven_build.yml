@@ -11,6 +11,9 @@
     maven_commands:
       - mvn clean
       - mvn package
+    git_commands:
+      - git commit -a -m 'Commit from Ansible'
+      - git push
 
   tasks:
     - name: Ensure that git_app_repo is not null
@@ -36,8 +39,17 @@
       debug:
         var: maven_output
 
-# git commit
-# Push 
+    - name: Commit and push the results
+      command:
+        chdir: "{{ git_tmp_checkout_dir }}"
+        cmd: "{{ item }}"
+      ignore_errors: True
+      register: git_output
+      with_items: "{{ git_commands }}"
+
+    - name: Print git output
+      debug:
+        var: git_output
 
 #    - name: Cleanup temporary directory
 #      file:
