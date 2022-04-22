@@ -5,6 +5,11 @@
 
   tasks:
 
+    - name: Ensure GitHub CLI is installed
+      yum:
+        name: gh
+        state: absent
+
     - name: Ensure GitHub CLI tools repository is available
       ansible.builtin.yum_repository:
         baseurl: https://cli.github.com/packages/rpm
@@ -13,9 +18,4 @@
         gpgcheck: yes
         gpgkey: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xc99b11deb97541f0
         name: gh-cli
-        state: present
-
-    - name: Ensure GitHub CLI is installed
-      yum:
-        name: gh
-        state: present
+        state: absent
