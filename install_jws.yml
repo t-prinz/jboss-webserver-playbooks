@@ -1,6 +1,6 @@
 ---
 - name: Ensure Java Web Server (JWS) is installed
-  hosts: all
+  hosts: "{{ hostlist | default('all') }}"
   become: True
   vars:
     configure_firewall: True

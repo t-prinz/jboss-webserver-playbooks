@@ -11,7 +11,7 @@
 #    jws_app_dir: "/opt/jws-5.5/tomcat/webapps"
 #
 - name: Ensure sample JWS application is installed
-  hosts: all
+  hosts: "{{ hostlist | default('all') }}"
   become: True
   vars:
     git_app_repo: "https://github.com/t-prinz/HelloServlet.git"

@@ -1,6 +1,6 @@
 ---
 - name: Ensure sample JWS applications are installed
-  hosts: all
+  hosts: "{{ hostlist | default('all') }}"
   become: True
   vars:
     jws_instances_vars: ""

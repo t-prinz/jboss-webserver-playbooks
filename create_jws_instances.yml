@@ -1,6 +1,6 @@
 ---
 - name: Create instances of JBoss Web Server
-  hosts: all
+  hosts: "{{ hostlist | default('all') }}"
   become: True
   vars:
     jws_instances_vars: ""
