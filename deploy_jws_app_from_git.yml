@@ -49,19 +49,12 @@
         dest: "{{ git_tmp_checkout_dir }}"
 
 #    - name: Ensure application is copied
-#      command:
-#        chdir: "{{ git_tmp_checkout_dir }}"
-#        cmd: "cp ./target/{{ jws_war_name }} {{ jws_app_dir }}/{{ dest_war_name }}"
-#      ignore_errors: True
-#      with_items: "{{ maven_commands }}"
-
-    - name: Ensure application is copied
-      copy:
-        dest: "{{ jws_app_dir }}/{{ dest_war_name }}"
-        group: tomcat
-        owner: tomcat
-        remote_src: Yes
-        src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
+#      copy:
+#        dest: "{{ jws_app_dir }}/{{ dest_war_name }}"
+#        group: tomcat
+#        owner: tomcat
+#        remote_src: Yes
+#        src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
 
 #    - name: Cleanup temporary directory
 #      file:
