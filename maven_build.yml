@@ -32,6 +32,10 @@
       register: maven_output
       with_items: "{{ maven_commands }}"
 
+    - name: Print maven output
+      debug:
+        var: maven_output
+
 # Push 
 
 #    - name: Cleanup temporary directory
