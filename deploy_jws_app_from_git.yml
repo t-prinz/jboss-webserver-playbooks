@@ -62,7 +62,7 @@
         remote_src: Yes
         src: "{{ git_tmp_checkout_dir }}/target/{{ jws_war_name }}"
 
-#    - name: Cleanup temporary directory
-#      file:
-#        path: "{{ git_tmp_checkout_dir }}"
-#        state: absent
+    - name: Cleanup temporary directory
+      file:
+        path: "{{ git_tmp_checkout_dir }}"
+        state: absent
