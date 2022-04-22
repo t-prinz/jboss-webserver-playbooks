@@ -2,11 +2,18 @@
 - name: Ensure git is configured
   hosts: "{{ hostlist | default('all') }}"
   vars:
+    git_login_id: ""
     git_username: ""
     git_email: ""
     git_token: ""
 
   tasks:
+
+    - name: Ensure that git_login_id is not null
+      assert:
+        fail_msg: "The variable git_login_id must be defined."
+        that:
+          - git_login_id != ""
 
     - name: Ensure that git_username is not null
       assert:
@@ -39,3 +46,8 @@
     - name: Print git configuration output
       debug:
         var: git_output
+        verbosity: 1
+
+    - name: print
+      debug:
+        msg: "https://{{ git_login_id }}:{{ git_token }}"@github.com"
