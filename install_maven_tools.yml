@@ -5,10 +5,20 @@
 
   tasks:
 
-    - name: Ensure required tools are installed (works with RHEL 8 only)
+    - name: Ensure required tools are installed for RHEL 8
       yum:
         name: "{{ item }}"
         state: present
       with_items:
         - git
         - maven
+      when: ansible_facts.distribution == "RedHat" and ansible_facts.distribution_major_version == "8"
+
+    - name: Ensure required tools are installed for RHEL 9
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - git
+        - maven-openjdk8
+      when: ansible_facts.distribution == "RedHat" and ansible_facts.distribution_major_version == "9"
