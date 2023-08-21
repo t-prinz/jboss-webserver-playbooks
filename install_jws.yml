@@ -19,6 +19,12 @@
           - jws-5-for-rhel-8-x86_64-rpms
       when: ansible_facts.distribution == "RedHat" and ansible_facts.distribution_major_version == "8"
 
+    - name: Define repositories to be enabled for RHEL 9
+      set_fact:
+        rhportal_reg_rhsm_supplemental_repo_list:
+          - jws-5-for-rhel-9-x86_64-rpms
+      when: ansible_facts.distribution == "RedHat" and ansible_facts.distribution_major_version == "9"
+
     - name: Ensure repositories are enabled
       command: "subscription-manager repos --enable={{ item }}"
       with_items: "{{ rhportal_reg_rhsm_supplemental_repo_list }}"
