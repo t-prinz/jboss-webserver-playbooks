@@ -18,6 +18,9 @@
     jws_war_name: "HelloServlet-1.0.0.war"
     git_tmp_checkout_dir: "/var/tmp/checkout"
     jws_app_dir: ""
+    maven_commands:
+      - mvn clean
+      - mvn package
 
   tasks:
     - name: Ensure that jws_app_dir is not null
@@ -26,15 +29,23 @@
         that:
           - jws_app_dir != ""
 
-    - name: Ensure git is installed
-      yum:
-        name: git
-        state: present
-
     - name: Obtain the application
       git:
         repo: "{{ git_app_repo }}"
         dest: "{{ git_tmp_checkout_dir }}"
+
+    - name: Run maven commands
+      command:
+        chdir: "{{ git_tmp_checkout_dir }}"
+        cmd: "{{ item }}"
+      ignore_errors: True
+      register: maven_output
+      with_items: "{{ maven_commands }}"
+
+    - name: Print maven output
+      debug:
+        var: maven_output
+        verbosity: 1
 
     - name: Ensure application is copied
       copy:
